@@ -1,6 +1,6 @@
 # apron.nvim
 
-Open _a PR on_ nvim
+Open <ins>a PR on</ins> GitHub from nvim
 
 ## Installation
 
