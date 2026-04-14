@@ -3,8 +3,8 @@ local window = require("apron.window")
 local github = require("apron.github")
 
 local github_interface = {
-	create_pr = function(content)
-		local success, result = github.create_pr(content)
+	create_pr = function(title, description)
+		local success, result = github.create_pr(title, description)
 
 		if success then
 			vim.notify("[Apron] PR created: " .. result, vim.log.levels.INFO)

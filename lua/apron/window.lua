@@ -1,5 +1,5 @@
 ---@class GitProvider
----@field create_pr fun(content: string) Create a PR with the given content
+---@field create_pr fun(title: string, description: string) Create a PR with the given content
 
 local M = {}
 
@@ -34,13 +34,29 @@ function M.open(git_provider)
 		title_pos = "center",
 	})
 
+	local ns_id = vim.api.nvim_create_namespace("Apron_UI")
+
+	local dashes = string.rep("#", width)
+	vim.api.nvim_buf_set_lines(bufnr, 1, 1, false, { dashes })
+
+	local separator_mark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, 1, 0, {
+		line_hl_group = "Folded",
+	})
+
 	-- Create PR on pressing "S"
 	vim.keymap.set("n", "S", function()
-		-- Get buffer contents
-		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-		local content = table.concat(lines, "\n")
+		local mark = vim.api.nvim_buf_get_extmark_by_id(bufnr, ns_id, separator_mark_id, {})
+		local sep_row = mark[1] -- This is the zero-indexed line number of the dashes
 
-		git_provider.create_pr(content)
+		-- Everything above the separator is the Title
+		local title_lines = vim.api.nvim_buf_get_lines(bufnr, 0, sep_row, false)
+		local title = table.concat(title_lines, " "):gsub("^%s*(.-)%s*$", "%1") -- Join and trim
+
+		-- Everything below the separator is the Description
+		local desc_lines = vim.api.nvim_buf_get_lines(bufnr, sep_row + 1, -1, false)
+		local description = table.concat(desc_lines, "\n")
+
+		git_provider.create_pr(title, description)
 	end, { buffer = bufnr, nowait = true, desc = "Submit PR" })
 
 	-- Start in insert mode
