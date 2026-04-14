@@ -1,15 +1,16 @@
 local M = {}
 
 ---Create a pull request on GitHub
----@param body string PR body/description
+---@param title string PR title
+---@param description string PR description
 ---@return boolean success Whether PR was created successfully
 ---@return string|nil result PR URL if success, error message if failed
-function M.create_pr(body)
+function M.create_pr(title, description)
 	-- Escape single quotes in body for shell
-	local escaped_body = body:gsub("'", "'\\''")
+	local escaped_title = title:gsub("'", "'\\''")
+	local escaped_description = description:gsub("'", "'\\''")
 
-	-- Use gh pr create with --fill-first to auto-generate title from first commit
-	local cmd = string.format("gh pr create --body '%s' --fill-first 2>&1", escaped_body)
+	local cmd = string.format("gh pr create --title '%s' --body '%s' 2>&1", escaped_title, escaped_description)
 
 	local handle = io.popen(cmd)
 	if not handle then
