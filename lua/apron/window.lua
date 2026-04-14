@@ -1,5 +1,6 @@
 ---@class GitProvider
 ---@field create_pr fun(title: string, description: string) Create a PR with the given content
+---@field get_pr_template fun(template_name?: string) Get a PR template
 
 local M = {}
 
@@ -38,6 +39,11 @@ function M.open(git_provider)
 
 	local dashes = string.rep("#", width)
 	vim.api.nvim_buf_set_lines(bufnr, 1, 1, false, { dashes })
+
+	local pr_template = git_provider.get_pr_template()
+	if pr_template then
+		vim.api.nvim_buf_set_lines(bufnr, 2, -1, false, vim.split(pr_template, "\n"))
+	end
 
 	local separator_mark_id = vim.api.nvim_buf_set_extmark(bufnr, ns_id, 1, 0, {
 		line_hl_group = "Folded",
