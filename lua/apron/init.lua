@@ -12,6 +12,7 @@ local github_interface = {
 			vim.notify("[Apron] Failed to create PR: " .. result, vim.log.levels.ERROR)
 		end
 	end,
+	get_pr_template = github.get_pr_template,
 }
 
 local M = {}
