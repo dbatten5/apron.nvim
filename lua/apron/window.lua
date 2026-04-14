@@ -37,7 +37,7 @@ function M.open(git_provider)
 
 	local ns_id = vim.api.nvim_create_namespace("Apron_UI")
 
-	local dashes = string.rep("#", width)
+	local dashes = "▲ title ▼ description " .. string.rep("-", width)
 	vim.api.nvim_buf_set_lines(bufnr, 1, 1, false, { dashes })
 
 	local pr_template = git_provider.get_pr_template()
