@@ -35,14 +35,26 @@ end
 ---Create a pull request on GitHub
 ---@param title string PR title
 ---@param description string PR description
+---@param draft? boolean whether to submit as a draft
+---@param web? boolean whether to continue in the web
 ---@return boolean success Whether PR was created successfully
 ---@return string|nil result PR URL if success, error message if failed
-function M.create_pr(title, description)
+function M.create_pr(title, description, draft, web)
 	-- Escape single quotes in body for shell
 	local escaped_title = title:gsub("'", "'\\''")
 	local escaped_description = description:gsub("'", "'\\''")
 
-	local cmd = string.format("gh pr create --title '%s' --body '%s' 2>&1", escaped_title, escaped_description)
+	local base_command = "gh pr create --title '%s' --body '%s'"
+
+	if draft then
+		base_command = base_command .. " -d"
+	end
+
+	if web then
+		base_command = base_command .. " -w"
+	end
+
+	local cmd = string.format(base_command, escaped_title, escaped_description)
 
 	local handle = io.popen(cmd)
 	if not handle then
