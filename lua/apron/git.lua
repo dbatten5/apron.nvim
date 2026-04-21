@@ -24,6 +24,18 @@ local function get_default_branch()
 	return "main" -- fallback
 end
 
+---Check if the current branch has a remote upstream configured
+---@return boolean
+function M.has_upstream()
+	local handle = io.popen("git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null")
+	if not handle then
+		return false
+	end
+	local result = handle:read("*a")
+	handle:close()
+	return result and result ~= ""
+end
+
 ---Get the commits for the diff between two branches
 ---@param target_branch? string defaults to the main branch
 ---@param base_branch? string defaults to the current branch
